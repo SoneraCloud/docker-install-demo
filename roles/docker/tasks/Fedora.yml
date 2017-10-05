@@ -1,0 +1,16 @@
+---
+- name: Add docker gpg key
+  rpm_key:
+    key: "{{ docker_gpg_key_url }}"
+
+- name: Add stable docker repo
+  command: "dnf config-manager --add-repo {{ docker_repo_url }}"
+
+- name: Update dnf cache
+  command: dnf makecache fast
+
+- name: Install docker
+  dnf:
+    name: docker-ce
+    state: latest
+...
