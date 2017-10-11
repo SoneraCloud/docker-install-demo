@@ -2,8 +2,7 @@
 - name: Install packages to allow apt to use a repository over https
   apt:
     name: "{{ item }}"
-  with_items:
-    - "{{ pkgs }}"
+  with_items: "{{ pkgs }}"
 
 - name: Add docker gpg key
   apt_key:
