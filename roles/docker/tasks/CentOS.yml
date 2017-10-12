@@ -6,7 +6,7 @@
 - name: Add stable docker repo
   get_url:
     url: "{{ docker_repo_url }}"
-    dest: /etc/yum.repos.d/docker-ce.repo
+    dest: "{{ docker_repo }}"
     owner: root
     group: root
     mode: 0644

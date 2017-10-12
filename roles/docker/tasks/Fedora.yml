@@ -4,10 +4,15 @@
     key: "{{ docker_gpg_key_url }}"
 
 - name: Add stable docker repo
-  command: "dnf config-manager --add-repo {{ docker_repo_url }}"
+  get_url:
+    url: "{{ docker_repo_url }}"
+    dest: "{{ docker_repo }}"
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Update dnf cache
-  command: dnf makecache fast
+  command: dnf makecache
 
 - name: Install docker
   dnf:

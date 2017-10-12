@@ -5,6 +5,10 @@
     state: started
     enabled: yes
 
+- name: Find out which username is being used to log in
+  set_fact:
+    username: "{{ ansible_env.LOGNAME }}"
+
 - name: Add {{ username }} user to docker group
   user:
     name: "{{ username }}"

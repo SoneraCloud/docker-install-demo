@@ -1,15 +1,14 @@
 ---
-- name: Find out which python version is avaible
+- name: Install latest docker-ce
   hosts: all
   gather_facts: false
-  remote_user: "{{ username }}"
-  tasks:
+  pre_tasks:
     - name: Check if python2 is available
       raw: python2 --version
       args:
         executable: /bin/bash
       register: python_exist
-      ignore_errors: yes
+      failed_when: false
       changed_when: false
 
     - name: Use python3 as the ansible interpreter if python2 is unavailable
@@ -17,9 +16,10 @@
         ansible_python_interpreter: /usr/bin/python3
       when: "'not installed' in python_exist.stdout or 'not found' in python_exist.stdout"
 
-- name: Install docker
-  hosts: all
-  remote_user: "{{ username }}"
-  become: true
+    - name: Gather facts
+      setup:
+        filter: ansible_*
+
   roles:
-    - docker
+    - role: docker
+      become: true
