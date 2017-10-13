@@ -1,26 +1,25 @@
---- 
-- hosts: all
-  remote_user: ubuntu
-  become: yes
+---
+- name: Install latest docker-ce
+  hosts: all
+  gather_facts: false
+  pre_tasks:
+    - name: Check if python2 is available
+      raw: python2 --version
+      args:
+        executable: /bin/bash
+      register: python_exist
+      failed_when: false
+      changed_when: false
 
-  tasks:
-  - name: Add docker repository key
-    apt_key:
-      keyserver: hkp://p80.pool.sks-keyservers.net:80
-      id: 58118E89F3A912897C070ADBF76221572C52609D
+    - name: Use python3 as the ansible interpreter if python2 is unavailable
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+      when: "'not installed' in python_exist.stdout or 'not found' in python_exist.stdout"
 
-  - name: Add docker repository
-    apt_repository:
-      repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
-      filename: docker
+    - name: Gather facts
+      setup:
+        filter: ansible_*
 
-  - name: Install docker-engine package
-    apt:
-      name: docker-engine
-
-  - name: Add ubuntu user to docker group
-    user:
-      name: ubuntu
-      groups: docker
-      append: yes 
-...
+  roles:
+    - role: docker
+      become: true
