@@ -1,0 +1,27 @@
+---
+- name: Add stable docker repo
+  yum_repository:
+    name: docker-ce
+    description: Docker CE Stable
+    baseurl: "{{ docker_repo_url }}"
+    gpgcheck: yes
+    gpgkey: "{{ docker_gpg_key_url }}"
+    enabled: yes
+
+- name: Update cache and install docker
+  yum:
+    name: docker-ce
+    state: latest
+    update_cache: yes
+  when: ansible_distribution == "CentOS"
+
+- name: Update dnf cache
+  command: dnf makecache
+  when: ansible_distribution == "Fedora"
+
+- name: Install docker
+  dnf:
+    name: docker-ce
+    state: latest
+  when: ansible_distribution == "Fedora"
+...
